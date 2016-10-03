@@ -134,6 +134,9 @@
 
                 this.$http.post('/api/products', params).then((response) => {
                     console.log(response);
+                    if(response.data.status == "success") {
+                        this.$router.go('/products'); 
+                    }
                 });
             }
         },
@@ -146,6 +149,7 @@
                     this.$set('id', data.id);
                     this.$set('product_name', data.product_name);
                     this.$set('sku', data.sku);
+                    this.$set('barcode', data.barcode);
                     this.$set('description', data.description);
                     this.$set('initial_inventory', data.initial_inventory);
                     this.$set('initial_cost', data.initial_cost);

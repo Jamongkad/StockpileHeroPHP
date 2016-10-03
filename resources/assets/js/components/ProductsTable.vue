@@ -17,7 +17,7 @@
                         -->
                         <!--<li><a href="#" @click="openAddProduct()"> Add Product</a></li>-->
                       
-                        <li><a v-link="{ path: '/productform' }" @click="openAddProduct()"><i class="fa fa-plus-circle"></i> Add Product</a></li>
+                        <li><a @click="openAddProduct()"><i class="fa fa-plus-circle"></i> Add Product</a></li>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
@@ -91,19 +91,27 @@
         },
         methods: {
             openAddProduct() {
-                console.log("dude");
+                this.$router.go('/productform');
             },
             openProduct(id) {
                 console.log("Opening Product " + id);
                 this.$router.go('/product/' + id);
+            },
+            loadTable() {
+                this.$http.get('/api/products').then((response) => {
+                    if(response.data) {
+                        this.products = response.data.products;     
+                    }  
+                }); 
             }
         },
-        ready() {
-            this.$http.get('/api/products').then((response) => {
-                if(response.data) {
-                    this.products = response.data.products;     
-                }  
-            });
-        }
+        ready() { 
+            this.loadTable();
+            //update every 1 minute
+            setInterval(() => {
+                console.log("Pineapple Clem");
+                this.loadTable();
+            }, 60000);
+        },
     }
 </script>

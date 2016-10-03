@@ -19,6 +19,7 @@ class ProductTable extends Migration
             $table->increments('id');
             $table->string('product_name');
             $table->string('sku');
+            $table->string('barcode');
             $table->text('description');
             $table->string('image');
             $table->integer('initial_inventory');

@@ -20,3 +20,4 @@ Route::get('/user', function (Request $request) {
 Route::get('/products', 'ApiController@getProducts');
 Route::post('/products', 'ApiController@postProduct');
 Route::get('/product/{id}', 'ApiController@getProduct');
+Route::post('/uploadfile', 'ApiController@uploadFile');

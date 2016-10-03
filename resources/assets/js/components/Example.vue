@@ -26,7 +26,7 @@
         methods: {
         },
         ready() {
-            console.log('Component ready.')
+            //console.log('Component ready.')
         }
     }
 </script>
