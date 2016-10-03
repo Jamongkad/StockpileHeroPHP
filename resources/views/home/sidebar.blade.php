@@ -26,10 +26,7 @@
               <li class="active"><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu" style="display: block;">
                   <li v-link-active>
-                      <a v-link="{ path: '/products' }">Products</a>
-                  </li>
-                  <li v-link-active>
-                      <a v-link="{ path: '/bar' }">Go to Bar</a>
+                      <a v-link="{ path: '/products' }">Inventory</a>
                   </li>
                 </ul>
               </li>

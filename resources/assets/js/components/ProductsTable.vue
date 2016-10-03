@@ -3,22 +3,21 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Products <small>Users</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <!--
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Settings 1</a></li>
-                                <li><a href="#">Settings 2</a></li>
-                            </ul>
-                        </li>
-                        -->
-                        <!--<li><a href="#" @click="openAddProduct()"> Add Product</a></li>-->
-                      
-                        <li><a @click="openAddProduct()"><i class="fa fa-plus-circle"></i> Add Product</a></li>
-                    </ul>
+                    <div class="col-xs-6 col-md-3">
+                        <h2>Inventory</h2>
+                    </div>
+                    <div class="col-xs-6 col-md-7">
+                        <input class="form-control input-sm" 
+                          type="search" 
+                          placeholder="Search by name or SKU" 
+                          v-model="search"
+                          v-on:keyup="searchProduct()" />
+                    </div>
+                    <div class="col-xs-6 col-md-2">
+                        <ul class="nav navbar-right panel_toolbox"> 
+                            <li><a @click="openAddProduct()"><i class="fa fa-plus-circle"></i> Add Product</a></li>
+                        </ul>
+                    </div>
                     <div class="clearfix"></div>
                 </div>
                 <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
@@ -69,6 +68,20 @@
                                     </tr>
                                 </tbody>
                             </table> 
+                            <nav style="margin-top:-32px" class="pull-right">
+                                <ul class="pagination">
+                                    <li v-if="pagination.current_page > 1">
+                                        <a href="#" aria-label="Previous" @click.prevent="changePage(pagination.current_page - 1)">
+                                            <span aria-hidden="true">&laquo; prev</span>
+                                        </a>
+                                    </li>
+                                    <li v-if="pagination.current_page < pagination.last_page">
+                                        <a href="#" aria-label="Next" @click.prevent="changePage(pagination.current_page + 1)">
+                                            <span aria-hidden="true">next &raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -83,35 +96,72 @@
     export default {
         data() {
             return {
-                name: "Apple Pen", 
                 products: [],
+                search: "",
+                pagination: {
+                    current_page: 1     
+                },
+                intervalTime: 120000,
+                searchMode: false,
             } 
         },
-        computed: { 
-        },
+        computed: {},
         methods: {
             openAddProduct() {
                 this.$router.go('/productform');
             },
             openProduct(id) {
-                console.log("Opening Product " + id);
                 this.$router.go('/product/' + id);
             },
-            loadTable() {
-                this.$http.get('/api/products').then((response) => {
-                    if(response.data) {
-                        this.products = response.data.products;     
-                    }  
-                }); 
-            }
+            loadTable() {                 
+                this.fetchProducts();     
+            },
+            fetchProducts() {
+                
+                if(this.searchMode) { 
+                    var data = { search: this.search, page: this.pagination.current_page };   
+                    this.$http.get('/api/search_product', {params: data}).then((response) => {
+                        this.products = response.data.data;
+                        this.$set('pagination', response.data);
+                    });
+                } else { 
+                    var data = { page: this.pagination.current_page };   
+                    this.$http.get('/api/products', {params: data}).then((response) => {
+                        this.products = response.data.data;
+                        this.$set('pagination', response.data);
+                    }); 
+                }
+
+            },
+            changePage(page) {
+                this.pagination.current_page = page;
+                this.fetchProducts();     
+            },
+            searchProduct() {
+
+                if(this.search) {
+                    this.searchMode = true;
+                    this.pagination.current_page = 0;
+                } else {
+                    this.searchMode = false; 
+                    this.pagination.current_page = 0;
+                }
+
+                var data = { search: this.search, page: this.pagination.current_page };   
+
+                this.$http.get('/api/search_product', {params: data}).then((response) => {
+                    this.products = response.data.data;
+                    this.$set('pagination', response.data);
+                });
+            },
         },
         ready() { 
             this.loadTable();
-            //update every 1 minute
             setInterval(() => {
+                //update every 2 minute
                 console.log("Pineapple Clem");
                 this.loadTable();
-            }, 60000);
+            }, this.intervalTime);
         },
     }
 </script>

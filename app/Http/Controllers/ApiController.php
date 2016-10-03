@@ -13,29 +13,7 @@ class ApiController extends Controller
 {
     //
     public function getProducts() {
-        $products = Product::all();
-
-        $resultData = [];
-        foreach($products as $product) {
-            $productData = new StdClass;
-
-            $productData->id = $product->id;
-            $productData->product_name = $product->product_name;
-            $productData->sku = $product->sku;
-            $productData->barcode = $product->barcode;
-            $productData->description = $product->description;
-            $productData->image = $product->image;
-            $productData->initial_inventory = $product->initial_inventory;
-            $productData->allocation = $product->allocation;
-            $productData->available = $product->available;
-            $productData->initial_cost = $product->initial_cost;
-            $productData->purchase_price = $product->purchase_price;
-            $productData->wholesale_price = $product->wholesale_price;
-            $productData->retail_price = $product->retail_price;
-            $resultData[] = $productData;
-        }
-
-        return response()->json(['products' => $resultData]);
+        return Product::paginate();
     }
 
     public function postProduct(Request $request) {
@@ -61,6 +39,11 @@ class ApiController extends Controller
              return response()->json(['status' => "success"]);
         }
 
+    }
+
+    public function searchProduct(Request $request) {
+        $searchTerms = $request->input('search');
+        return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')->paginate();     
     }
 
     public function getProduct($id) {
