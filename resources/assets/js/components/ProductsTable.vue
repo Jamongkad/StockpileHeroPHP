@@ -29,7 +29,7 @@
                                         <th class="sorting_asc" tabindex="0" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 124px;"  
+                                            style="width: 124px; cursor: pointer"  
                                             @click="orderBy('orderName')" 
                                             > 
                                             <span v-if="filterIcons.orderName.active">
@@ -45,7 +45,7 @@
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 206px;" 
+                                            style="width: 206px; cursor: pointer" 
                                             @click="orderBy('orderStock')" 
                                             > 
                                             <span v-if="filterIcons.orderStock.active">
@@ -60,7 +60,7 @@
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 89px;" 
+                                            style="width: 89px; cursor: pointer" 
                                             @click="orderBy('orderAllocated')" 
                                             > 
                                             <span v-if="filterIcons.orderAllocated.active">
@@ -75,7 +75,7 @@
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 42px;" 
+                                            style="width: 42px; cursor: pointer" 
                                             @click="orderBy('orderAvailable')" 
                                             > 
                                             <span v-if="filterIcons.orderAvailable.active">
@@ -90,7 +90,7 @@
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 89px;"  
+                                            style="width: 89px; cursor: pointer"  
                                             @click="orderBy('orderCost')" 
                                             > 
                                             <span v-if="filterIcons.orderCost.active">
@@ -223,23 +223,28 @@
                     this.$set('pagination', response.data);
                 });
             },
-            orderBy(icons) {
+            orderBy(icon) {
                 for(var prop in this.filterIcons) { 
-                    if(this.filterIcons[prop] != this.filterIcons[icons]) { 
-                        this.filterIcons[prop].active = false;
-                        this.filterIcons[prop].filter = false;
-                    } else { 
-                        this.filterIcons[icons].active = true;
-                        this.filterIcons[icons].filter =! this.filterIcons[icons].filter; 
+
+                    var choice     = this.filterIcons[icon];
+                    var otherProps = this.filterIcons[prop];
+
+                    if(otherProps != choice) {
+                        otherProps.active = false;      
+                        otherProps.filter = false;      
+                    } else {
+                        choice.active = true ;
+                        choice.filter =! choice.filter;
                     }
-                }
+                } 
                 /*
-                var data = { page: this.pagination.current_page, order_product_name: order };   
+                var data = { page: this.pagination.current_page, order_type: icon };   
                 this.$http.get('/api/products', {params: data}).then((response) => {
                     this.products = response.data.data;
                     this.$set('pagination', response.data);
                 }); 
                 */
+
             }
         },
         ready() { 
