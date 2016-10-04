@@ -11,17 +11,39 @@ use StdClass;
 
 class ApiController extends Controller
 {
-    //
     public function getProducts(Request $request) {
-        if($order_by_name = $request->input('order_product_name')) { 
-            if($order_by_name == "true") {
-                return Product::orderBy('product_name', 'asc')->paginate();     
-            } else { 
-                return Product::orderBy('product_name', 'desc')->paginate();     
-            }  
+        $order_type = $request->input('order_type');
+        $order_filter = $request->input('order_filter');
+
+        if($order_type == "orderName") {  
+            return $this->orderProductResult($order_filter, 'product_name');
+        }
+
+        if($order_type == "orderStock") { 
+            return $this->orderProductResult($order_filter, 'initial_inventory');
+        }
+        
+        if($order_type == "orderAllocated") { 
+            return $this->orderProductResult($order_filter, 'allocation');
+        }
+
+        if($order_type == "orderAvailable") { 
+            return $this->orderProductResult($order_filter, 'available');
+        }
+
+        if($order_type == "orderCost") { 
+            return $this->orderProductResult($order_filter, 'initial_cost');
         }
 
         return Product::orderBy('id', 'asc')->paginate();     
+    }
+
+    private function orderProductResult($filter, $col) {
+        if($filter == "true") { 
+            return Product::orderBy($col, 'asc')->paginate();     
+        } 
+
+        return Product::orderBy($col, 'desc')->paginate();     
     }
 
     public function postProduct(Request $request) {
@@ -50,7 +72,45 @@ class ApiController extends Controller
     }
 
     public function searchProduct(Request $request) {
-        $searchTerms = $request->input('search');
+        $order_type   = $request->input('order_type');
+        $order_filter = $request->input('order_filter');
+        $searchTerms  = $request->input('search');
+
+        if($order_type == "orderName") {  
+            return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')
+                          ->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')
+                          ->orderBy('product_name', (($order_filter == "true") ? 'asc' : 'desc'))
+                          ->paginate();     
+        }
+
+        if($order_type == "orderStock") {  
+            return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')
+                          ->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')
+                          ->orderBy('initial_inventory', (($order_filter == "true") ? 'asc' : 'desc'))
+                          ->paginate();     
+        }
+        
+        if($order_type == "orderAllocated") { 
+            return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')
+                          ->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')
+                          ->orderBy('allocation', (($order_filter == "true") ? 'asc' : 'desc'))
+                          ->paginate();               
+        }
+
+        if($order_type == "orderAvailable") {  
+            return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')
+                          ->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')
+                          ->orderBy('available', (($order_filter == "true") ? 'asc' : 'desc'))
+                          ->paginate();     
+        }
+
+        if($order_type == "orderCost") { 
+            return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')
+                          ->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')
+                          ->orderBy('initial_cost', (($order_filter == "true") ? 'asc' : 'desc'))
+                          ->paginate();      
+        }
+         
         return Product::where('product_name', 'LIKE', '%' . $searchTerms . '%')->orWhere('sku', 'LIKE', '%' . $searchTerms . '%')->paginate();     
     }
 

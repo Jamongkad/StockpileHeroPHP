@@ -148,6 +148,8 @@
                 },
                 intervalTime: 120000,
                 searchMode: false,
+                orderType: "",
+                choiceFilter: "",
                 filterIcons: { 
                     orderName: {
                         active: false,
@@ -184,17 +186,31 @@
                 this.fetchProducts();     
             },
             fetchProducts() {
+
+                console.log("Order Type: " + this.orderType);
+                console.log("Filter Type: " + this.choiceFilter);
                 
                 if(this.searchMode) { 
                     console.log("Search Mode on");
                     var data = { search: this.search, page: this.pagination.current_page };   
+
+                    if(this.orderType) {  
+                        data = { search: this.search, page: this.pagination.current_page, order_type: this.orderType, order_filter: this.choiceFilter };   
+                    }
+
                     this.$http.get('/api/search_product', {params: data}).then((response) => {
                         this.products = response.data.data;
                         this.$set('pagination', response.data);
                     });
                 } else { 
                     console.log("Normal Mode on");
+
                     var data = { page: this.pagination.current_page };   
+
+                    if(this.orderType) {  
+                        data = { page: this.pagination.current_page, order_type: this.orderType, order_filter: this.choiceFilter };   
+                    }
+                        
                     this.$http.get('/api/products', {params: data}).then((response) => {
                         this.products = response.data.data;
                         this.$set('pagination', response.data);
@@ -224,6 +240,8 @@
                 });
             },
             orderBy(icon) {
+                this.pagination.current_page = 0;
+
                 for(var prop in this.filterIcons) { 
 
                     var choice     = this.filterIcons[icon];
@@ -237,13 +255,23 @@
                         choice.filter =! choice.filter;
                     }
                 } 
-                /*
-                var data = { page: this.pagination.current_page, order_type: icon };   
-                this.$http.get('/api/products', {params: data}).then((response) => {
-                    this.products = response.data.data;
-                    this.$set('pagination', response.data);
-                }); 
-                */
+
+                this.orderType = icon;
+                this.choiceFilter = choice.filter;
+
+                if(this.searchMode) { 
+                    var data = { search: this.search, page: 0, order_type: this.orderType, order_filter: this.choiceFilter };   
+                    this.$http.get('/api/search_product', {params: data}).then((response) => {
+                        this.products = response.data.data;
+                        this.$set('pagination', response.data);
+                    });
+                } else { 
+                    var data = { page: 0, order_type: icon, order_filter: choice.filter };   
+                    this.$http.get('/api/products', {params: data}).then((response) => {
+                        this.products = response.data.data;
+                        this.$set('pagination', response.data);
+                    }); 
+                }
 
             }
         },
