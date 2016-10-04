@@ -198,10 +198,7 @@
                         data = { search: this.search, page: this.pagination.current_page, order_type: this.orderType, order_filter: this.choiceFilter };   
                     }
 
-                    this.$http.get('/api/search_product', {params: data}).then((response) => {
-                        this.products = response.data.data;
-                        this.$set('pagination', response.data);
-                    });
+                    this.loadDataSearchProducts(data);
                 } else { 
                     console.log("Normal Mode on");
 
@@ -211,10 +208,7 @@
                         data = { page: this.pagination.current_page, order_type: this.orderType, order_filter: this.choiceFilter };   
                     }
                         
-                    this.$http.get('/api/products', {params: data}).then((response) => {
-                        this.products = response.data.data;
-                        this.$set('pagination', response.data);
-                    }); 
+                    this.loadDataProducts(data);
                 }
 
             },
@@ -233,11 +227,7 @@
                 this.pagination.current_page = 0;
 
                 var data = { search: this.search, page: this.pagination.current_page };   
-
-                this.$http.get('/api/search_product', {params: data}).then((response) => {
-                    this.products = response.data.data;
-                    this.$set('pagination', response.data);
-                });
+                this.loadDataSearchProducts(data);
             },
             orderBy(icon) {
                 this.pagination.current_page = 0;
@@ -261,18 +251,24 @@
 
                 if(this.searchMode) { 
                     var data = { search: this.search, page: 0, order_type: this.orderType, order_filter: this.choiceFilter };   
-                    this.$http.get('/api/search_product', {params: data}).then((response) => {
-                        this.products = response.data.data;
-                        this.$set('pagination', response.data);
-                    });
+                    this.loadDataSearchProducts(data);
                 } else { 
                     var data = { page: 0, order_type: icon, order_filter: choice.filter };   
-                    this.$http.get('/api/products', {params: data}).then((response) => {
-                        this.products = response.data.data;
-                        this.$set('pagination', response.data);
-                    }); 
+                    this.loadDataProducts(data);
                 }
 
+            },
+            loadDataProducts(data) {
+                this.$http.get('/api/products', {params: data}).then((response) => {
+                    this.products = response.data.data;
+                    this.$set('pagination', response.data);
+                }); 
+            },
+            loadDataSearchProducts(data) { 
+                this.$http.get('/api/search_product', {params: data}).then((response) => {
+                    this.products = response.data.data;
+                    this.$set('pagination', response.data);
+                });
             }
         },
         ready() { 
