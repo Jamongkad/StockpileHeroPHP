@@ -6,7 +6,7 @@
 
         <div class="clearfix"></div>
 
-        <!-- menu profile quick info -->
+        <!-- menu profile quick info 
         <div class="profile">
           <div class="profile_pic">
             <img src="images/img.jpg" alt="..." class="img-circle profile_img">
@@ -16,8 +16,10 @@
             <h2>John Doe</h2>
           </div>
         </div>
-        <!-- /menu profile quick info -->
         <br>
+        -->
+        <!-- /menu profile quick info -->
+
         <!-- sidebar menu -->
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
           <div class="menu_section active">

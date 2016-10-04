@@ -12,8 +12,16 @@ use StdClass;
 class ApiController extends Controller
 {
     //
-    public function getProducts() {
-        return Product::paginate();
+    public function getProducts(Request $request) {
+        if($order_by_name = $request->input('order_product_name')) { 
+            if($order_by_name == "true") {
+                return Product::orderBy('product_name', 'asc')->paginate();     
+            } else { 
+                return Product::orderBy('product_name', 'desc')->paginate();     
+            }  
+        }
+
+        return Product::orderBy('id', 'asc')->paginate();     
     }
 
     public function postProduct(Request $request) {

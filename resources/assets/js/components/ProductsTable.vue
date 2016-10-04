@@ -27,35 +27,80 @@
                                 <thead>
                                     <tr role="row">
                                         <th class="sorting_asc" tabindex="0" 
-                                            aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 124px;" 
-                                            aria-sort="ascending" 
-                                            aria-label="Name: activate to sort column descending">Name</th>
+                                            style="width: 124px;"  
+                                            @click="orderBy('orderName')" 
+                                            > 
+                                            <span v-if="filterIcons.orderName.active">
+                                                <i v-if="filterIcons.orderName.filter" class="fa fa-sort-amount-asc"></i> 
+                                                <i v-else class="fa fa-sort-amount-desc"></i>   
+                                            </span>
+                                            <span v-else>
+                                                <i class="fa fa-sort-amount-asc disable-icon"></i> 
+                                            </span>
+                                            Name</th>
+
                                         <th class="sorting" tabindex="0" 
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
                                             style="width: 206px;" 
-                                            aria-label="Position: activate to sort column ascending">Total Stock</th>
+                                            @click="orderBy('orderStock')" 
+                                            > 
+                                            <span v-if="filterIcons.orderStock.active">
+                                                <i v-if="filterIcons.orderStock.filter" class="fa fa-sort-amount-asc"></i> 
+                                                <i v-else class="fa fa-sort-amount-desc"></i>   
+                                            </span>
+                                            <span v-else>
+                                                <i class="fa fa-sort-amount-asc disable-icon"></i> 
+                                            </span>
+                                            Total Stock</th>                                  
                                         <th class="sorting" tabindex="0" 
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
                                             style="width: 89px;" 
-                                            aria-label="Office: activate to sort column ascending">Allocated</th>
+                                            @click="orderBy('orderAllocated')" 
+                                            > 
+                                            <span v-if="filterIcons.orderAllocated.active">
+                                                <i v-if="filterIcons.orderAllocated.filter" class="fa fa-sort-amount-asc"></i> 
+                                                <i v-else class="fa fa-sort-amount-desc"></i>   
+                                            </span>
+                                            <span v-else>
+                                                <i class="fa fa-sort-amount-asc disable-icon"></i> 
+                                            </span>
+                                            Allocated</th>
                                         <th class="sorting" tabindex="0" 
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
                                             style="width: 42px;" 
-                                            aria-label="Age: activate to sort column ascending">Available</th>
+                                            @click="orderBy('orderAvailable')" 
+                                            > 
+                                            <span v-if="filterIcons.orderAvailable.active">
+                                                <i v-if="filterIcons.orderAvailable.filter" class="fa fa-sort-amount-asc"></i> 
+                                                <i v-else class="fa fa-sort-amount-desc"></i>   
+                                            </span>
+                                            <span v-else>
+                                                <i class="fa fa-sort-amount-asc disable-icon"></i> 
+                                            </span>
+                                            Available</th>
                                         <th class="sorting" tabindex="0" 
                                             aria-controls="datatable" 
                                             rowspan="1" 
                                             colspan="1" 
-                                            style="width: 89px;" aria-label="Start date: activate to sort column ascending">Cost</th>
+                                            style="width: 89px;"  
+                                            @click="orderBy('orderCost')" 
+                                            > 
+                                            <span v-if="filterIcons.orderCost.active">
+                                                <i v-if="filterIcons.orderCost.filter" class="fa fa-sort-amount-asc"></i> 
+                                                <i v-else class="fa fa-sort-amount-desc"></i>   
+                                            </span>
+                                            <span v-else>
+                                                <i class="fa fa-sort-amount-asc disable-icon"></i> 
+                                            </span>
+                                            Cost</th>
                                     </tr>
                                 </thead>
                                 <tbody>    
@@ -103,6 +148,28 @@
                 },
                 intervalTime: 120000,
                 searchMode: false,
+                filterIcons: { 
+                    orderName: {
+                        active: false,
+                        filter: false
+                    },
+                    orderStock: { 
+                        active: false,
+                        filter: false
+                    },
+                    orderAllocated: { 
+                        active: false,
+                        filter: false
+                    },
+                    orderAvailable: { 
+                        active: false,
+                        filter: false
+                    },
+                    orderCost: {
+                        active: false,
+                        filter: false 
+                    },
+                }
             } 
         },
         computed: {},
@@ -119,12 +186,14 @@
             fetchProducts() {
                 
                 if(this.searchMode) { 
+                    console.log("Search Mode on");
                     var data = { search: this.search, page: this.pagination.current_page };   
                     this.$http.get('/api/search_product', {params: data}).then((response) => {
                         this.products = response.data.data;
                         this.$set('pagination', response.data);
                     });
                 } else { 
+                    console.log("Normal Mode on");
                     var data = { page: this.pagination.current_page };   
                     this.$http.get('/api/products', {params: data}).then((response) => {
                         this.products = response.data.data;
@@ -141,11 +210,11 @@
 
                 if(this.search) {
                     this.searchMode = true;
-                    this.pagination.current_page = 0;
                 } else {
-                    this.searchMode = false; 
-                    this.pagination.current_page = 0;
+                    this.searchMode = false;  
                 }
+                 
+                this.pagination.current_page = 0;
 
                 var data = { search: this.search, page: this.pagination.current_page };   
 
@@ -154,14 +223,34 @@
                     this.$set('pagination', response.data);
                 });
             },
+            orderBy(icons) {
+                for(var prop in this.filterIcons) { 
+                    if(this.filterIcons[prop] != this.filterIcons[icons]) { 
+                        this.filterIcons[prop].active = false;
+                        this.filterIcons[prop].filter = false;
+                    } else { 
+                        this.filterIcons[icons].active = true;
+                        this.filterIcons[icons].filter =! this.filterIcons[icons].filter; 
+                    }
+                }
+                /*
+                var data = { page: this.pagination.current_page, order_product_name: order };   
+                this.$http.get('/api/products', {params: data}).then((response) => {
+                    this.products = response.data.data;
+                    this.$set('pagination', response.data);
+                }); 
+                */
+            }
         },
         ready() { 
             this.loadTable();
+            /*
             setInterval(() => {
                 //update every 2 minute
                 console.log("Pineapple Clem");
                 this.loadTable();
             }, this.intervalTime);
+            */
         },
     }
 </script>

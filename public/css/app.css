@@ -6,6 +6,10 @@ li.active-select {
 .warning {
   color: #F08080; }
 
+.disable-icon {
+  color: lightgrey;
+  opacity: 0.5; }
+
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.

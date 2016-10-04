@@ -12,7 +12,7 @@
         </div> 
         <footer>
           <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            StockpileHero - A simple way to keep track of your inventory.
           </div>
           <div class="clearfix"></div>
         </footer>
