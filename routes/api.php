@@ -22,3 +22,4 @@ Route::post('/products', 'ApiController@postProduct');
 Route::get('/product/{id}', 'ApiController@getProduct');
 Route::post('/uploadfile', 'ApiController@uploadFile');
 Route::get('/search_product', 'ApiController@searchProduct');
+Route::delete('/delete/{id}', 'ApiController@deleteProduct');

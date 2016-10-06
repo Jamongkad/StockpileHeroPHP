@@ -85,11 +85,26 @@
                     </div>
                     <div class="ln_solid"></div>
 
-                    <div class="form-group">
+                    <div class="form-group" v-if="$route.params.id"> 
+                        <span v-if="$validation.valid">
+                            <span class="col-md-3 col-sm-6 col-xs-12 col-md-offset-3">
+                                <button type="submit" class="btn btn-success btn-block" @click="submit()">Submit</button>
+                            </span>
+                            <span class="col-md-3 col-sm-6 col-xs-12">
+                                <button type="submit" class="btn btn-danger btn-block" @click="delete_inventory(id)">Delete</button>
+                            </span>
+                        </span>
+                        <span v-else>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <button type="submit" class="btn btn-danger btn-block" @click="delete_inventory(id)">Delete</button>
+                            </div>
+                        </span>
+                    </div>  
+                    <div class="form-group" v-else> 
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                             <button type="submit" class="btn btn-success btn-block" @click="submit()" v-if="$validation.valid">Submit</button>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
             </form>
@@ -118,7 +133,6 @@
         },
         methods: {
             submit() {
-
                 var params = {
                     "id": this.id,
                     "product_name": this.product_name,
@@ -133,11 +147,20 @@
                 };
 
                 this.$http.post('/api/products', params).then((response) => {
-                    console.log(response);
+                    //console.log(response);
                     if(response.data.status == "success") {
                         this.$router.go('/products'); 
                     }
                 });
+            },
+            delete_inventory(id) {
+                if (window.confirm("Are you sure you want to delete this product?")) { 
+                    this.$http.delete('/api/delete/' + id).then((response) => {
+                        if(response.data.status == "success") {
+                            this.$router.go('/products'); 
+                        }
+                    });
+                }
             }
         },
         ready() {
@@ -145,7 +168,7 @@
                 var id = this.$route.params.id;
                 this.$http.get('/api/product/' + id).then((response) => {
                     var data = response.data.product;
-                    console.log(data);
+                    //console.log(data);
                     this.$set('id', data.id);
                     this.$set('product_name', data.product_name);
                     this.$set('sku', data.sku);

@@ -50,7 +50,18 @@ class ApiController extends Controller
         $input = $request->all(); 
 
         if($input["id"]) {
-             var_dump("update!");           
+             $product = Product::find($input['id']);
+             $product->product_name = $input["product_name"];
+             $product->available = $input["initial_inventory"];;
+             $product->description = $input["description"];
+             $product->barcode = $input["barcode"];
+             $product->sku = $input["sku"];
+             $product->initial_inventory = $input["initial_inventory"];
+             $product->initial_cost = $input["initial_cost"];
+             $product->purchase_price = $input["purchase_price"];
+             $product->wholesale_price = $input["wholesale_price"];
+             $product->retail_price = $input["retail_price"];
+             $product->save();
         } else { 
              $product = new Product;
              $product->product_name = $input["product_name"];
@@ -66,9 +77,8 @@ class ApiController extends Controller
              $product->wholesale_price = $input["wholesale_price"];
              $product->retail_price = $input["retail_price"];
              $product->save();
-             return response()->json(['status' => "success"]);
         }
-
+        return response()->json(['status' => "success"]);
     }
 
     public function searchProduct(Request $request) {
@@ -117,6 +127,12 @@ class ApiController extends Controller
     public function getProduct($id) {
         $product = Product::where('id', '=', $id)->first();
         return response()->json(['product' => $product]);
+    }
+
+    public function deleteProduct(Request $request, $id) {     
+        $product = Product::where('id', '=', $id)->first();
+        $product->delete();
+        return response()->json(['status' => 'success']);
     }
 
     public function uploadFile(Request $request) { 
