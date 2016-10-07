@@ -85,9 +85,9 @@
                         </div>
                         <div class="ln_solid"></div>
 
+                        <loading v-if="deleting" message="Deleting Inventory..."></loading>
+                        <loading v-if="saving" message="Saving Inventory..."></loading>
                         <div class="form-group" v-if="$route.params.id"> 
-                            <loading v-if="deleting" message="Deleting Inventory..."></loading>
-                            <loading v-if="saving" message="Saving Inventory..."></loading>
                             <span v-if="$validation.valid">
                                 <span class="col-md-3 col-sm-6 col-xs-12 col-md-offset-3">
                                     <button type="submit" class="btn btn-success btn-block" @click="submit()">Submit</button>
