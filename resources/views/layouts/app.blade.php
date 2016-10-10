@@ -6,16 +6,20 @@
     </head>
     <body id="app" class="nav-md">
         <div class="container body">
-            @include('home.navbar')
-            @include('home.sidebar')
+            <? if(Auth::check()): ?>
+                @include('home.navbar')
+                @include('home.sidebar')
+            <? endif ?>
             @yield('content')
         </div> 
-        <footer>
-          <div class="pull-right">
-            StockpileHero - A simple way to keep track of your inventory.
-          </div>
-          <div class="clearfix"></div>
-        </footer>
+        <? if(Auth::check()): ?>
+            <footer>
+                <div class="pull-right">
+                    StockpileHero - A simple way to keep track of your inventory.
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+        <? endif ?>
     </body>
     <script src="{{ asset('js/app.js') }}"></script>
 </html>

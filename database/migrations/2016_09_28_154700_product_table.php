@@ -17,6 +17,7 @@ class ProductTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+            $table->integer('company_id');
             $table->string('product_name');
             $table->string('sku');
             $table->string('barcode');
