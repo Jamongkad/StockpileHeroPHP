@@ -143,6 +143,7 @@
             return {
                 products: [],
                 search: "",
+                apiToken: window.apiToken,
                 pagination: {
                     current_page: 1     
                 },
@@ -259,12 +260,14 @@
 
             },
             loadDataProducts(data) {
+                data.api_token = this.apiToken;
                 this.$http.get('/api/products', {params: data}).then((response) => {
                     this.products = response.data.data;
                     this.$set('pagination', response.data);
                 }); 
             },
             loadDataSearchProducts(data) { 
+                data.api_token = this.apiToken;
                 this.$http.get('/api/search_product', {params: data}).then((response) => {
                     this.products = response.data.data;
                     this.$set('pagination', response.data);

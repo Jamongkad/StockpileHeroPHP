@@ -48,7 +48,9 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="initial_inventory">Initial inventory</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input v-model="initial_inventory" class="form-control col-md-7 col-xs-12" type="text">
+                                <input v-model="initial_inventory" v-validate:initial_inventory="['numeric', 'required']" class="form-control col-md-7 col-xs-12" type="text">
+                                <div class="warning" v-if="$validation.initial_inventory.required">Initial inventory is required.</div>
+                                <div class="warning" v-if="$validation.initial_inventory.numeric">Initial inventory should be a number.</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -120,6 +122,7 @@ import Loading from './Loading.vue'
 export default {
     data() {
         return {
+            params: {api_token: window.apiToken},
             id: "",
             product_name: "", 
             description: "",
@@ -152,14 +155,16 @@ export default {
                 "purchase_price": this.purchase_price,
                 "wholesale_price": this.wholesale_price,
                 "retail_price": this.retail_price,
+                "company_id": window.companyId,
             };
+
+            console.log(params);
 
             this.$http.post('/api/products', params, {
                 before: () => {
                     this.saving = true; 
                 } 
             }).then((response) => {
-                //console.log(response);
                 this.saving = false; 
                 if(response.data.status == "success") {
                     this.$router.go('/products'); 
@@ -168,7 +173,7 @@ export default {
         },
         delete_inventory(id) {
             if (window.confirm("Are you sure you want to delete this product?")) { 
-                this.$http.delete('/api/delete/' + id, { 
+                this.$http.delete('/api/delete/' + id, {params: this.params},  { 
                     before: () => { 
                         this.deleting = true; 
                     } 
@@ -184,7 +189,7 @@ export default {
     ready() {
         if(this.$route.params.id) {
             var id = this.$route.params.id;
-            this.$http.get('/api/product/' + id).then((response) => {
+            this.$http.get('/api/product/' + id, {params: this.params}).then((response) => {
                 var data = response.data.product;
                 //console.log(data);
                 this.$set('id', data.id);
@@ -206,7 +211,10 @@ export default {
             check: function(val) {
                 return /^(\d+\.?\d*|\.\d+)$/.test(val);   
             }
-        }
+        },
+        numeric: function (val) {
+            return /^[-+]?[0-9]+$/.test(val)
+        },
     }
 }
 </script>

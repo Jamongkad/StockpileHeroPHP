@@ -12,11 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
-
 Route::get('/products', 'ApiController@getProducts');
 Route::post('/products', 'ApiController@postProduct');
 Route::get('/product/{id}', 'ApiController@getProduct');
@@ -24,4 +19,17 @@ Route::post('/uploadfile', 'ApiController@uploadFile');
 Route::get('/search_product', 'ApiController@searchProduct');
 Route::delete('/delete/{id}', 'ApiController@deleteProduct');
 
-Route::get('/user', 'ApiController@getUser');
+Route::get('/user', function(Request $request) { 
+    return response()->json($request->user()); 
+});
+
+Route::post('/login', function(Request $request) {
+    $data = $request->input();
+
+    if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+        // Authentication passed...
+        return response()->json(['status' => 'login success', 'api_token' => $request->user()->api_token]);
+    }  
+
+    return response()->json(['status' => 'login failed', 'api_token' => null]);
+});

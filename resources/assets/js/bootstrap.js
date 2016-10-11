@@ -18,7 +18,7 @@ require('bootstrap-sass');
 
 window.Vue = require('vue');
 require('vue-resource');
-//require('vue-router');
+
 /**
  * We'll register a HTTP interceptor to attach the "CSRF" header to each of
  * the outgoing requests issued by this application. The CSRF middleware
@@ -29,6 +29,9 @@ Vue.http.interceptors.push((request, next) => {
     request.headers['X-CSRF-TOKEN'] = $('meta[name="csrf-token"]').attr('content');//Laravel.csrfToken;
     next();
 });
+
+window.apiToken = $('meta[name="api-token"]').attr('content');//api token
+window.companyId = $('meta[name="company-id"]').attr('content');//company id
 
 
 /**

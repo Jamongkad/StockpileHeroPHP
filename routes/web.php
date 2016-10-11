@@ -37,6 +37,7 @@ Route::post('/register', function(Request $request) {
     $user->name = $data['name'];
     $user->email = $data['email'];
     $user->password = bcrypt($data['password']);
+    $user->api_token = str_random(60);
     //this changes when you have the create an organisation screen. 
     $user->company_id = 1;
     $user->save();

@@ -14,7 +14,7 @@ class ApiController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api', ['except' => ['postProduct']]);
     }
 
     public function getProducts(Request $request) {
@@ -71,6 +71,7 @@ class ApiController extends Controller
         } else { 
              $product = new Product;
              $product->product_name = $input["product_name"];
+             $product->company_id = $input["company_id"];
              $product->image = ""; 
              $product->allocation = 0;
              $product->available = $input["initial_inventory"];;
@@ -139,10 +140,6 @@ class ApiController extends Controller
         $product = Product::where('id', '=', $id)->first();
         $product->delete();
         return response()->json(['status' => 'success']);
-    }
-
-    public function getUser(Request $request) {
-        var_dump(Auth::user());
     }
 
     public function uploadFile(Request $request) { 
