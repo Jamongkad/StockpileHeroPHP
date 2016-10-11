@@ -6,7 +6,9 @@
                     <div class="panel-heading">Example Component</div>
 
                     <div class="panel-body">
-                        I'm an example component! {{ name }}
+                        <authorized-clients></authorized-clients>
+                        <clients></clients>
+                        <personal-access-tokens></personal-access-tokens>
                     </div>
                 </div>
             </div>
@@ -15,18 +17,27 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                name: "Apple Pen", 
-            } 
-        },
-        computed: { 
-        },
-        methods: {
-        },
-        ready() {
-            //console.log('Component ready.')
-        }
+import AuthorizedClients from './passport/AuthorizedClients.vue'
+import Clients from './passport/Clients.vue'
+import PersonalAccessTokens from './passport/PersonalAccessTokens.vue'
+
+export default {
+    data() {
+        return {
+            name: "Apple Pen", 
+        } 
+    },
+    components: {
+        AuthorizedClients,
+        Clients,
+        PersonalAccessTokens
+    },
+    computed: { 
+    },
+    methods: {
+    },
+    ready() {
+        //console.log('Component ready.')
     }
+}
 </script>
