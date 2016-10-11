@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Requests;
 use App\Response;
@@ -11,6 +12,11 @@ use StdClass;
 
 class ApiController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
+
     public function getProducts(Request $request) {
         $order_type = $request->input('order_type');
         $order_filter = $request->input('order_filter');
@@ -133,6 +139,10 @@ class ApiController extends Controller
         $product = Product::where('id', '=', $id)->first();
         $product->delete();
         return response()->json(['status' => 'success']);
+    }
+
+    public function getUser(Request $request) {
+        var_dump(Auth::user());
     }
 
     public function uploadFile(Request $request) { 
