@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 Route::get('/products', 'ApiController@getProducts');
+Route::get('/all_products', 'ApiController@getAllProducts');
 Route::post('/products', 'ApiController@postProduct');
 Route::get('/product/{id}', 'ApiController@getProduct');
 Route::post('/uploadfile', 'ApiController@uploadFile');

@@ -44,6 +44,10 @@ class ApiController extends Controller
         return Product::orderBy('id', 'asc')->paginate();     
     }
 
+    public function getAllProducts(Request $request) {
+        return Product::orderBy('id', 'asc')->get();
+    }
+
     private function orderProductResult($filter, $col) {
         if($filter == "true") { 
             return Product::orderBy($col, 'asc')->paginate();     
